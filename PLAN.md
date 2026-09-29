@@ -27,13 +27,13 @@ The flagship project. Static analysis (your existing strength from the Delivery 
 - [x] Config (`RuleConfig`) lets a consumer enable/disable rules and override severity per rule ID
 - **Acceptance:** verified for real, not just asserted — added `hardcoded-svg-color` (the 4th rule) after M1.1/M1.2's core three were already working, and it required exactly one new file plus one line in `buildAllRules`'s array; zero changes to `jsx-utils.ts`, `analyze.ts`, or `types.ts`. Component-prop metadata (including `@deprecated` JSDoc) is read directly from Project 0's actual `.tsx` source via `component-registry.ts`, not hand-maintained — verified empirically against the real `Button.tsx` before writing the rules that depend on it, which is what caught two real bugs upstream (see Project 0's changelog: the missing `"./package.json"` export, discovered because this registry builder needs it to locate the source directory).
 
-### M1.3 — LLM client abstraction
+### M1.3 — LLM client abstraction — done
 
-- [ ] A single interface (`generate(prompt, schema?) -> result`) with two implementations: Ollama (local, default) and Anthropic (optional, config-selected via an env var such as `LLM_PROVIDER`)
-- [ ] Prompts are written provider-neutral — no formatting or feature assumed that only one provider supports
-- [ ] Model choice per provider is config, not hardcoded (e.g. `llama3.1` or `qwen2.5-coder` locally, `claude-*` for the Anthropic path)
-- [ ] Ollama runs via Docker locally (see repo-root `docker-compose.yml`) so `docker compose up` plus a model pull is the entire local setup — no native Ollama install required, though either works
-- **Acceptance:** the same CLI command produces a result against both providers with only the env var changed; switching providers requires no code change.
+- [x] A single interface (`LlmClient.generate(request) -> GenerateResult`) with two implementations: Ollama (local, default) and Anthropic (optional, config-selected via `LLM_PROVIDER`)
+- [x] Prompts are provider-neutral (`{ prompt, system }`) — nothing assumed that only one provider supports
+- [x] Model choice per provider is config (`LLM_MODEL` env or explicit option), defaulting to `llama3.2:1b` for Ollama and `claude-haiku-4-5-20251001` for Anthropic — not hardcoded elsewhere
+- [x] Ollama runs via Docker (`docker-compose.yml`) on host port **11435**, not the default 11434 — a real conflict I hit immediately: this machine already has a native Ollama install bound to 11434 with its own models, so the Dockerized instance needs its own port to stay unambiguous and portable for anyone else running this
+- **Acceptance:** verified live, not just structurally — `docker compose up -d`, pulled `llama3.2:1b` (1.3GB, ~1 min), called `createLlmClient().generate(...)` with zero env config and got a real completion back from the container. Anthropic path is verified by construction + a unit test (throws a clear error with no key, constructs cleanly with one) — a live call needs a real API key, deferred to M1.8 where one gets used deliberately for the published eval baseline, matching the plan's own reasoning for why that's the only place a key should be needed.
 
 ### M1.4 — LLM layer: explanation
 

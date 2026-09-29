@@ -15,6 +15,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
     "@ds/components": "link:../00-design-system/packages/components",
     "@ds/tokens": "link:../00-design-system/packages/tokens",
     "commander": "^12.1.0",

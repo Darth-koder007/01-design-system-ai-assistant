@@ -1,0 +1,12 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      # Host port 11435, not the Ollama default 11434 — avoids colliding with a
+      # native Ollama install that might already be running on the host.
+      - "11435:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:
