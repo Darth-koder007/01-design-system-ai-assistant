@@ -17,6 +17,24 @@ const fakeLlmClient: LlmClient = {
 };
 
 describe("checkFiles", () => {
+  it("passes the TARGET component's props to explainViolation for raw-element violations, not the raw tag's (regression: extractTagName used to grab the first <...> match, the raw tag, not the last)", async () => {
+    const registry = buildComponentRegistry();
+    const capturedPrompts: string[] = [];
+    const capturingClient: LlmClient = {
+      generate: async (request) => {
+        capturedPrompts.push(request.prompt);
+        return { text: "stub", provider: "fake", model: "fake" };
+      },
+    };
+
+    await checkFiles([fixture("raw-elements.tsx")], registry, capturingClient);
+
+    const inputPrompt = capturedPrompts.find((p) => p.includes("should be <Input>"));
+    expect(inputPrompt).toBeDefined();
+    expect(inputPrompt).toContain("Input's available props:");
+    expect(inputPrompt).toContain("- label");
+  });
+
   it("attaches an explanation and a type-checking codemod diff to each violation", async () => {
     const registry = buildComponentRegistry();
     const results = await checkFiles([fixture("deprecated-prop.tsx")], registry, fakeLlmClient);

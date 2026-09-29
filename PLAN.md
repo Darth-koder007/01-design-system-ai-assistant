@@ -64,6 +64,10 @@ The flagship project. Static analysis (your existing strength from the Delivery 
 - [x] LLM-dependent tests (`explain.test.ts`, `check.test.ts`) use a hand-written deterministic fake `LlmClient` rather than a recorded real response — a deliberate choice, not a shortcut: a fake client is simpler than a record/replay mechanism and has zero flakiness risk from a real model's non-determinism, while still exercising the exact same code path (the fake conforms to the same `LlmClient` interface everything else uses)
 - **Acceptance:** verified directly, not assumed — grepped every test file for a real `.generate()` call or raw `fetch()` (none exist outside the actual client implementations), then physically stopped the Ollama container and re-ran the full suite: all 24 tests still pass. CI never needs Ollama or an Anthropic key to pass.
 
+### M1.8's prep found a real bug in M1.6
+
+While preparing the eval set, spot-checked whether raw-element-should-be-component explanations actually received the target component's real prop list (the thing M1.4 exists to do). They didn't — `check.ts`'s `extractTagName` used the _first_ `<...>` match in a violation message, which for "Raw `<input>` should be `<Input>`..." is the raw tag being replaced, not the design-system target. `componentInfo` was silently `undefined` for every raw-element violation since M1.6 shipped it. Fixed to take the _last_ match (harmless for deprecated-prop's single-match messages), added a regression test in `check.test.ts` that captures the actual prompt sent and asserts it contains the target component's real prop list.
+
 ### M1.8 — Eval harness
 
 - [ ] Pull 20-30 real violation cases from actual open-source repos using similar patterns (not the same clean fixtures from M1.7) — realistic messy code, ambiguous cases included

@@ -10,8 +10,15 @@ export interface CheckedViolation extends Violation {
   codemodDiff?: string;
 }
 
+/**
+ * Extracts the *target* component name from a violation message — the last `<...>` occurrence,
+ * not the first. For raw-element-should-be-component ("Raw <input> should be <Input>..."), the
+ * first match is the raw tag being replaced, not the design-system component; for deprecated-prop
+ * ("<Button> prop ..."), there's only one match, so first-vs-last makes no difference there.
+ */
 function extractTagName(violation: Violation): string {
-  return violation.message.match(/<(\w+)>/)?.[1] ?? "";
+  const matches = [...violation.message.matchAll(/<(\w+)>/g)];
+  return matches.at(-1)?.[1] ?? "";
 }
 
 export async function checkFiles(
