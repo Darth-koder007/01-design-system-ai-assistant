@@ -1,0 +1,45 @@
+.github/workflows/ci.yml
+  s_f0c6a093b18fbc::t_30239cafbc5a1d 53-99
+evals/baseline.json
+  s_f0c6a093b18fbc::t_a4871d9e59ecfc 1-5,7,9
+  s_f0c6a093b18fbc::t_bd4da80bdaaa5f 6,8
+PLAN.md
+  s_f0c6a093b18fbc::t_601b1113dd3271 71-82
+package.json
+  s_f0c6a093b18fbc::t_eebdb3e7c9ed12 41
+  s_f0c6a093b18fbc::t_3e6ab44797e1d5 15-16
+src/check.ts
+  s_f0c6a093b18fbc::t_d81efcdabb3568 19
+  s_f0c6a093b18fbc::t_1b740c3b218adc 33
+evals/run-eval.ts
+  s_f0c6a093b18fbc::t_5edfa3b79c2cb5 145-155,157
+  s_f0c6a093b18fbc::t_f789e63879cfcd 14,22-37,40-43,46-47
+  s_f0c6a093b18fbc::t_3368ed8bb2cc7c 15-21,44-45
+  s_f0c6a093b18fbc::t_5ebfd73387f714 1-13,48-59,65-138,165-201
+  s_f0c6a093b18fbc::t_37adb68b7ebb35 38-39
+  s_f0c6a093b18fbc::t_8c1db46058fd8f 60-64
+  s_f0c6a093b18fbc::t_be291ee22593e5 139-144,156,158-164
+tsconfig.json
+  s_f0c6a093b18fbc::t_613f2205808b82 18
+evals/results.md
+  s_f0c6a093b18fbc::t_bd4da80bdaaa5f 12,14-16
+  s_f0c6a093b18fbc::t_a4871d9e59ecfc 1-11,13,17-22
+pnpm-lock.yaml
+  s_f0c6a093b18fbc::t_53ef3e360df7af 69-71,80,102-107,120-125,138-143,156-161,174-179,192-197,210-215,228-233,246-251,264-269,282-287,300-305,318-323,336-341,354-359,372-377,390-395,402-407,420-425,432-437,450-455,462-467,480-485,498-503,516-521,534-539,1069-1073,1639-1643,1827-1829,1836-1838,1845-1847,1854-1856,1863-1865,1872-1874,1881-1883,1890-1892,1899-1901,1908-1910,1917-1919,1926-1928,1935-1937,1944-1946,1953-1955,1962-1964,1971-1973,1977-1979,1986-1988,1992-1994,2001-2003,2007-2009,2016-2018,2025-2027,2034-2036,2043-2045,2572-2600,3140-3145,3198,3209
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "a47214ecc130776926ee4f8df2ffb3a5f0dcdde1",
+  "prompts": {},
+  "sessions": {
+    "s_f0c6a093b18fbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cdf59d10-8ac1-40c5-8e78-59b7400789f3",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Darth-koder007 <vj2010sn@gmail.com>"
+    }
+  }
+}
