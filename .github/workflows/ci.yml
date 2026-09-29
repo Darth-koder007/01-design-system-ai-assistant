@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+        with:
+          path: design-system-ai-assistant
+
+      # This repo depends on the design system via a local workspace link
+      # (see package.json: "@ds/components": "link:../00-design-system/packages/components"),
+      # not an npm dependency — the design system isn't published to a registry yet
+      # (tracked as a known follow-up in PLAN.md). Checking both repos out as siblings
+      # here reproduces the same local directory layout used in development.
+      - name: Checkout design system
+        uses: actions/checkout@v4
+        with:
+          repository: Darth-koder007/00-design-system
+          path: 00-design-system
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: design-system-ai-assistant/pnpm-lock.yaml
+
+      - name: Build the design system's dependency packages
+        working-directory: 00-design-system
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @ds/tokens run build
+          pnpm --filter @ds/components run build
+
+      - name: Install, lint, typecheck, test, build
+        working-directory: design-system-ai-assistant
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm lint
+          pnpm typecheck
+          pnpm test
+          pnpm build
