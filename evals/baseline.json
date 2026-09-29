@@ -1,0 +1,9 @@
+{
+  "date": "2026-09-29",
+  "providerModel": "ollama:(default)",
+  "caseFileCount": 22,
+  "totalViolations": 24,
+  "explanationQualityRate": 0.958,
+  "codemodEligibleCount": 18,
+  "codemodSuccessRate": 0.778
+}

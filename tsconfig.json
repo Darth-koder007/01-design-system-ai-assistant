@@ -15,5 +15,5 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true
   },
-  "include": ["src", "fixtures"]
+  "include": ["src", "fixtures", "evals"]
 }

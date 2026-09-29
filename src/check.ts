@@ -16,7 +16,7 @@ export interface CheckedViolation extends Violation {
  * first match is the raw tag being replaced, not the design-system component; for deprecated-prop
  * ("<Button> prop ..."), there's only one match, so first-vs-last makes no difference there.
  */
-function extractTagName(violation: Violation): string {
+export function extractTargetComponentName(violation: Violation): string {
   const matches = [...violation.message.matchAll(/<(\w+)>/g)];
   return matches.at(-1)?.[1] ?? "";
 }
@@ -30,7 +30,7 @@ export async function checkFiles(
 
   const results: CheckedViolation[] = [];
   for (const violation of violations) {
-    const componentInfo = componentRegistry.get(extractTagName(violation));
+    const componentInfo = componentRegistry.get(extractTargetComponentName(violation));
     const explanation = await explainViolation(violation, llmClient, componentInfo);
     const codemod = generateCodemod(violation.file, violation, componentRegistry);
 

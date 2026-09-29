@@ -50,3 +50,50 @@ jobs:
           pnpm typecheck
           pnpm test
           pnpm build
+
+  eval:
+    runs-on: ubuntu-latest
+    services:
+      ollama:
+        image: ollama/ollama:latest
+        ports:
+          - 11434:11434
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+        with:
+          path: design-system-ai-assistant
+
+      - name: Checkout design system
+        uses: actions/checkout@v4
+        with:
+          repository: Darth-koder007/00-design-system
+          path: 00-design-system
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: design-system-ai-assistant/pnpm-lock.yaml
+
+      - name: Build the design system's dependency packages
+        working-directory: 00-design-system
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @ds/tokens run build
+          pnpm --filter @ds/components run build
+
+      - name: Pull the local model
+        run: curl -s http://localhost:11434/api/pull -d '{"model":"llama3.2:3b"}'
+
+      - name: Run the eval regression gate against Ollama
+        working-directory: design-system-ai-assistant
+        env:
+          OLLAMA_BASE_URL: http://localhost:11434
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm eval:check
