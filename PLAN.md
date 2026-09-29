@@ -81,13 +81,14 @@ While preparing the eval set, spot-checked whether raw-element-should-be-compone
   3. **Real, expected non-determinism.** Re-running the identical 22 cases against the identical local model produced 70.8% / 91.7% / 87.5% / 95.8% across iterations on this script (each rerun re-samples the model, not just re-scores) — not a bug, but a fact worth designing around. A zero-tolerance regression gate would be flaky on pure sampling noise, so the CI gate uses a 10-point tolerance band instead, verified in both directions: manually inflated a copy of the baseline and confirmed `pnpm eval:check` correctly exits 1, then restored it and confirmed a clean pass.
   4. **Final recorded numbers (Ollama, `llama3.2:3b`):** 91.7-95.8% explanation quality across runs, 77.8% codemod success rate (14/18 mechanical-fix-eligible violations) — not 100%, deliberately, matching M1.5's documented `Checkbox`/`Radio`/`Select` limitations.
 
-### M1.9 — README + demo
+### M1.9 — README + demo — done (recorded terminal output; PR demo blocked pending push)
 
-- [ ] Problem framing: this is what the Delivery Hero metrics-dashboard experience generalizes to when you add an LLM layer — name that connection explicitly, it's your strongest credibility signal
-- [ ] Architecture diagram: file/diff → AST → rule engine → (LLM explain + codemod) → CLI/Action output
-- [ ] Recorded demo: real PR, real inline comments, <90 seconds
-- [ ] State the M1.8 eval numbers up front, not buried, with the provider they were measured against
-- [ ] "Design decisions" section: why rules stay deterministic and the LLM is scoped to explanation/codemod only, why codemods are never auto-applied, why the tool works with no API key via Ollama
+- [x] Problem framing naming the Delivery Hero metrics-dashboard connection explicitly
+- [x] Architecture diagram (ASCII, in README) tracing file/diff → AST → rule engine → (LLM explain + codemod) → CLI/Action output
+- [ ] **Not a video/PR demo:** that needs a real PR against a pushed repo (same GitHub-access blocker as M1.6/M0.5). Used the actual, real terminal transcript captured earlier instead, explicitly labeled as "not staged" in the README — an honest substitute, not a placeholder pretending to be the real thing
+- [x] M1.8's eval numbers stated in the README's second section, with the provider/model named, before any other content
+- [x] "Design decisions" section covering deterministic rules, LLM scope, no-auto-apply codemods, and Ollama-first zero-API-key operation, plus a "Real limitations found" section listing every genuine gap by name (not just the polished parts)
+- **Acceptance:** README written to `CLAUDE.md`'s documentation bar — evaluator-facing, leads with what it proves, states the eval numbers and every real limitation plainly rather than only listing what works.
 
 ### M1.10 — Flip repo to public
 
