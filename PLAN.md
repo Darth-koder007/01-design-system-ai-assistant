@@ -31,7 +31,7 @@ The flagship project. Static analysis (your existing strength from the Delivery 
 
 - [x] A single interface (`LlmClient.generate(request) -> GenerateResult`) with two implementations: Ollama (local, default) and Anthropic (optional, config-selected via `LLM_PROVIDER`)
 - [x] Prompts are provider-neutral (`{ prompt, system }`) — nothing assumed that only one provider supports
-- [x] Model choice per provider is config (`LLM_MODEL` env or explicit option), defaulting to `llama3.2:1b` for Ollama and `claude-haiku-4-5-20251001` for Anthropic — not hardcoded elsewhere
+- [x] Model choice per provider is config (`LLM_MODEL` env or explicit option), defaulting to `llama3.2:3b` for Ollama (see M1.4 — the initial `1b` default was replaced after a real hallucination finding) and `claude-haiku-4-5-20251001` for Anthropic — not hardcoded elsewhere
 - [x] Ollama runs via Docker (`docker-compose.yml`) on host port **11435**, not the default 11434 — a real conflict I hit immediately: this machine already has a native Ollama install bound to 11434 with its own models, so the Dockerized instance needs its own port to stay unambiguous and portable for anyone else running this
 - **Acceptance:** verified live, not just structurally — `docker compose up -d`, pulled `llama3.2:1b` (1.3GB, ~1 min), called `createLlmClient().generate(...)` with zero env config and got a real completion back from the container. Anthropic path is verified by construction + a unit test (throws a clear error with no key, constructs cleanly with one) — a live call needs a real API key, deferred to M1.8 where one gets used deliberately for the published eval baseline, matching the plan's own reasoning for why that's the only place a key should be needed.
 
