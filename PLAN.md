@@ -13,19 +13,19 @@ The flagship project. Static analysis (your existing strength from the Delivery 
 
 ## Milestones
 
-### M1.1 — Static-analysis layer
+### M1.1 — Static-analysis layer — done
 
-- [ ] Parse a target file/diff into an AST, walk JSX for element usage
-- [ ] Detect: raw HTML elements matching a design-system component's semantic role (`<button>` where `<Button>` exists), hardcoded style values matching a token's value, deprecated prop usage
-- [ ] Output a structured `Violation[]` (file, line, rule id, matched code) — no LLM involved yet
-- **Acceptance:** running against a fixture file with known violations returns exactly the expected list, byte-for-byte reproducible.
+- [x] Parse a target file/diff into an AST, walk JSX for element usage (`jsx-utils.ts`, `analyze.ts`)
+- [x] Detect: raw HTML elements matching a design-system component's semantic role, hardcoded style values matching a token's value, deprecated prop usage
+- [x] Output a structured `Violation[]` (file, line, rule id, severity, message, matched code) — no LLM involved
+- **Acceptance:** verified — 7 fixture-based tests in `src/analyze.test.ts`, each asserting the exact violation list (not just "some violations exist").
 
-### M1.2 — Rule engine
+### M1.2 — Rule engine — done
 
-- [ ] Rules are data (id, description, matcher function, severity), not hardcoded in the walker — new rules addable without touching the traversal code
-- [ ] At least 3 rule categories: deprecated prop, raw-element-should-be-component, hardcoded-value-should-be-token
-- [ ] Config file lets a consuming repo enable/disable rules and set severity
-- **Acceptance:** adding a 4th rule (your choice) requires only a new rule definition, no changes to M1.1's walker.
+- [x] Rules are data returned by factory functions implementing a shared `Rule` interface (`rule-registry.ts`), not hardcoded in the walker
+- [x] 4 rule categories (one more than the minimum 3): `raw-element-should-be-component`, `hardcoded-value-should-be-token`, `deprecated-prop`, `hardcoded-svg-color`
+- [x] Config (`RuleConfig`) lets a consumer enable/disable rules and override severity per rule ID
+- **Acceptance:** verified for real, not just asserted — added `hardcoded-svg-color` (the 4th rule) after M1.1/M1.2's core three were already working, and it required exactly one new file plus one line in `buildAllRules`'s array; zero changes to `jsx-utils.ts`, `analyze.ts`, or `types.ts`. Component-prop metadata (including `@deprecated` JSDoc) is read directly from Project 0's actual `.tsx` source via `component-registry.ts`, not hand-maintained — verified empirically against the real `Button.tsx` before writing the rules that depend on it, which is what caught two real bugs upstream (see Project 0's changelog: the missing `"./package.json"` export, discovered because this registry builder needs it to locate the source directory).
 
 ### M1.3 — LLM client abstraction
 
