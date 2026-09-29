@@ -1,0 +1,39 @@
+PLAN.md
+  s_f0c6a093b18fbc::t_53d0bbbf431264 45,47-49
+  s_f0c6a093b18fbc::t_a28b297acac5ee 50
+src/codemod.test.ts
+  s_f0c6a093b18fbc::t_31f1a5bc504a97 62
+  s_f0c6a093b18fbc::t_5fa7f631ed1cd7 1-44,51-60,63-86
+  s_f0c6a093b18fbc::t_0e87354fe49b74 45-50,61
+src/component-registry.ts
+  s_f0c6a093b18fbc::t_1387b016dee028 44,49
+  s_f0c6a093b18fbc::t_c7a3bdaf442c96 9-14
+src/rules/raw-element-should-be-component.ts
+  s_f0c6a093b18fbc::t_4e830d6b39196f 20,24-25,28-30,35,41,50
+package.json
+  s_f0c6a093b18fbc::t_84391cf124beef 27
+  s_f0c6a093b18fbc::t_cd5d8280135fe2 22
+src/codemod.ts
+  s_f0c6a093b18fbc::t_5094e0221b4aa2 2
+  s_f0c6a093b18fbc::t_acb98e7d4e01bf 1,3-106,109-124
+  s_f0c6a093b18fbc::t_efe455c1922d73 107-108
+  s_f0c6a093b18fbc::t_cf8601ce4fd4e5 125
+pnpm-lock.yaml
+  s_f0c6a093b18fbc::t_1cb0d19cedf65d 23-25,33-35,590-592,866-869,1947-1948,2241-2242
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "72fd25a0d16fe6dfc47b0839c557b99e13b9226d",
+  "prompts": {},
+  "sessions": {
+    "s_f0c6a093b18fbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cdf59d10-8ac1-40c5-8e78-59b7400789f3",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Darth-koder007 <vj2010sn@gmail.com>"
+    }
+  }
+}
