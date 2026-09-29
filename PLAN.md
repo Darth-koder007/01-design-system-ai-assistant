@@ -42,12 +42,12 @@ The flagship project. Static analysis (your existing strength from the Delivery 
 - [x] Deterministic fallback (the rule's own `violation.message`) on any LLM error or a 10s timeout — verified with both a rejected-promise test and a fake-timers hung-promise test
 - **Acceptance:** verified live against real Ollama, and the process caught a real quality problem worth recording honestly: the initial default model (`llama3.2:1b`) passed the substring check ("tone" present) but **hallucinated a nonexistent `success` prop** in its explanation — not caught by a crude substring assertion, only by actually reading the output. Switched the default to `llama3.2:3b` (~2GB, still small), re-verified live, no hallucination, concrete before/after code (`tone="danger"` instead of `color="danger"`). This is exactly the gap M1.8's eval harness needs to score for explicitly (does the explanation reference only real props), not just presence of the right keyword — noted here as a design input for M1.8, not deferred silently.
 
-### M1.5 — Codemod generation
+### M1.5 — Codemod generation — done
 
-- [ ] For violations with a mechanical fix (raw element → component, deprecated prop → new prop), generate an AST-based transform, not a text-based find/replace
-- [ ] Output a unified diff, never write to disk directly — human always reviews before applying
-- [ ] Transform is type-checked against the design system's types before being presented as a suggestion; discard and fall back to explanation-only if it doesn't type-check
-- **Acceptance:** applying the generated diff to the fixture file produces code that compiles and passes the fixture's existing tests.
+- [x] Deterministic AST-based transforms via ts-morph (`codemod.ts`) — no LLM involved, since the mechanical fix is already fully determined once a rule fires (rename a tag, rename a prop); renames both the opening and closing JSX tag, adds/extends the `@ds/components` import as needed
+- [x] Output is a unified diff (`diff` package's `createPatch`), computed on an in-memory ts-morph `Project` — the real file on disk is never touched
+- [x] Transform is type-checked (`getPreEmitDiagnostics()` against a `Project` built from this repo's real `tsconfig.json`, so `@ds/components`'s actual types are in scope) before being presented; `typeChecks: false` signals the caller to fall back to explanation-only
+- **Acceptance:** verified against real fixtures, including two cases that are _supposed_ to fail and correctly do: `select` → `Select` fails type-check because `Select` requires an `options` prop this tool can't safely synthesize from raw `<option>` children, and `input[type=checkbox]` → `Checkbox` fails because `CheckboxProps` requires a `label` (accessibility) that a bare checkbox input has no source for. Both are genuine limitations, not bugs — the fallback path is what makes them safe. `Button`'s deprecated `color` → `tone` rename and raw `<button>` → `<Button>` both succeed and type-check cleanly. 5 tests in `codemod.test.ts`.
 
 ### M1.6 — CLI + GitHub Action
 

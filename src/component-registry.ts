@@ -6,6 +6,12 @@ export interface PropInfo {
   name: string;
   deprecated: boolean;
   deprecationMessage?: string;
+  /** The suggested replacement prop name, parsed from a backtick-quoted identifier in the @deprecated message (e.g. "Use `tone` instead."). Undefined if the message doesn't name one — the codemod rule falls back to explanation-only in that case rather than guessing. */
+  replacementProp?: string;
+}
+
+function parseReplacementProp(message: string | undefined): string | undefined {
+  return message?.match(/`(\w+)`/)?.[1];
 }
 
 export interface ComponentInfo {
@@ -35,10 +41,12 @@ function extractPropsFromInterface(interfaceName: string, project: Project): Pro
         .find((tag) => tag.getTagName() === "deprecated");
 
       const deprecationMessage = deprecatedTag?.getCommentText()?.trim();
+      const replacementProp = parseReplacementProp(deprecationMessage);
       props.push({
         name: member.getName(),
         deprecated: Boolean(deprecatedTag),
         ...(deprecationMessage !== undefined ? { deprecationMessage } : {}),
+        ...(replacementProp !== undefined ? { replacementProp } : {}),
       });
     }
     return props;

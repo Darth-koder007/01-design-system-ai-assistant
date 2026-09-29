@@ -17,24 +17,28 @@ const TEXT_LIKE_INPUT_TYPES = new Set([
   "search",
 ]);
 
-interface Mapping {
+export interface RawElementMapping {
   tag: string;
   componentName: string;
   predicate?: (element: JsxTagLike) => boolean;
+  /** Attributes to strip when codemodding — required whenever the target Props type Omits them (e.g. Checkbox/Radio Omit "type" from InputHTMLAttributes, so leaving it would fail typecheck). */
+  dropAttributes: string[];
 }
 
-const MAPPINGS: Mapping[] = [
-  { tag: "button", componentName: "Button" },
-  { tag: "select", componentName: "Select" },
+export const MAPPINGS: RawElementMapping[] = [
+  { tag: "button", componentName: "Button", dropAttributes: [] },
+  { tag: "select", componentName: "Select", dropAttributes: [] },
   {
     tag: "input",
     componentName: "Checkbox",
     predicate: (el) => getAttributeStringValue(el, "type") === "checkbox",
+    dropAttributes: ["type"],
   },
   {
     tag: "input",
     componentName: "Radio",
     predicate: (el) => getAttributeStringValue(el, "type") === "radio",
+    dropAttributes: ["type"],
   },
   {
     tag: "input",
@@ -43,6 +47,7 @@ const MAPPINGS: Mapping[] = [
       const type = getAttributeStringValue(el, "type");
       return type === undefined || TEXT_LIKE_INPUT_TYPES.has(type);
     },
+    dropAttributes: [],
   },
 ];
 
