@@ -1,0 +1,103 @@
+name: Design System Check
+
+on:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      ollama:
+        image: ollama/ollama:latest
+        ports:
+          - 11434:11434
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+        with:
+          path: design-system-ai-assistant
+          fetch-depth: 0
+
+      # Same two-repo layout as the main CI workflow (see PLAN.md's "Cross-repo dependency" note) —
+      # this repo depends on the design system via a local link, not a published npm package yet.
+      - name: Checkout design system
+        uses: actions/checkout@v4
+        with:
+          repository: Darth-koder007/00-design-system
+          path: 00-design-system
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: design-system-ai-assistant/pnpm-lock.yaml
+
+      - name: Build the design system's dependency packages
+        working-directory: 00-design-system
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter @ds/tokens run build
+          pnpm --filter @ds/components run build
+
+      - name: Install and build the assistant
+        working-directory: design-system-ai-assistant
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Pull the local model into the Ollama service
+        run: |
+          curl -s http://localhost:11434/api/pull -d '{"model":"llama3.2:3b"}'
+
+      - name: Get changed TSX files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          path: design-system-ai-assistant
+          files: |
+            **/*.tsx
+
+      - name: Run the assistant against changed files
+        if: steps.changed-files.outputs.any_changed == 'true'
+        id: check
+        working-directory: design-system-ai-assistant
+        env:
+          OLLAMA_BASE_URL: http://localhost:11434
+        run: |
+          node dist/cli.js check ${{ steps.changed-files.outputs.all_changed_files }} --format=json > /tmp/results.json
+          cat /tmp/results.json
+
+      - name: Post inline PR review comments
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            const path = require("path");
+            const results = JSON.parse(fs.readFileSync("/tmp/results.json", "utf8"));
+            const repoRoot = path.join(process.env.GITHUB_WORKSPACE, "design-system-ai-assistant") + "/";
+
+            for (const violation of results) {
+              const relativePath = violation.file.startsWith(repoRoot)
+                ? violation.file.slice(repoRoot.length)
+                : violation.file;
+
+              await github.rest.pulls.createReviewComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                commit_id: context.payload.pull_request.head.sha,
+                path: relativePath,
+                line: violation.line,
+                body: `**${violation.ruleId}** (${violation.severity})\n\n${violation.explanation}${
+                  violation.codemodDiff ? `\n\n\`\`\`diff\n${violation.codemodDiff}\n\`\`\`` : ""
+                }`,
+              });
+            }

@@ -49,12 +49,13 @@ The flagship project. Static analysis (your existing strength from the Delivery 
 - [x] Transform is type-checked (`getPreEmitDiagnostics()` against a `Project` built from this repo's real `tsconfig.json`, so `@ds/components`'s actual types are in scope) before being presented; `typeChecks: false` signals the caller to fall back to explanation-only
 - **Acceptance:** verified against real fixtures, including two cases that are _supposed_ to fail and correctly do: `select` → `Select` fails type-check because `Select` requires an `options` prop this tool can't safely synthesize from raw `<option>` children, and `input[type=checkbox]` → `Checkbox` fails because `CheckboxProps` requires a `label` (accessibility) that a bare checkbox input has no source for. Both are genuine limitations, not bugs — the fallback path is what makes them safe. `Button`'s deprecated `color` → `tone` rename and raw `<button>` → `<Button>` both succeed and type-check cleanly. 5 tests in `codemod.test.ts`.
 
-### M1.6 — CLI + GitHub Action
+### M1.6 — CLI + GitHub Action — CLI verified live; Action written, unverified (needs a pushed repo)
 
-- [ ] `assistant check <path-or-diff>` — human-readable terminal output with file:line, explanation, suggested diff
-- [ ] `assistant check --format=json` for machine consumption
-- [ ] GitHub Action wraps the CLI, runs on `pull_request`, posts findings as inline PR review comments (not one giant comment). The Action's CI job runs against the Ollama container (M1.3), not Anthropic — no API secret needed for the workflow to run on a fork or in a public repo
-- **Acceptance:** a real PR against a scratch repo using Project 0's design system gets correct inline comments from the Action.
+- [x] `assistant check <paths...>` — human-readable terminal output with file:line, message, explanation, suggested diff (`cli.ts`/`check.ts`, logic split out of the entry point so it's testable — a bare `program.parse()` at module scope would otherwise fire on import)
+- [x] `assistant check --format=json` for machine consumption
+- [x] GitHub Action (`design-system-check.yml`) wraps the built CLI, runs on `pull_request` with Ollama as a service container (no API key/secret needed), posts one inline review comment per violation via `actions/github-script`
+- [ ] **Not yet verified end-to-end:** doing so needs an actual PR against a pushed GitHub repo, which needs the same GitHub account access blocked since M0.5. The CLI itself (the part that matters most) _is_ verified live — see below.
+- **Acceptance (CLI):** ran the real built CLI (`node dist/cli.js check ...`) against both fixtures live against Ollama. `deprecated-prop.tsx`: correct explanation, correct codemod diff. `raw-elements.tsx` (5 violations): 2 get a clean codemod diff (`Input`, `Button` — both type-check), 3 correctly omit one (`Checkbox`, `Radio`, `Select` — all fail their type-check gate for the genuine reasons documented in M1.5), and every single violation still gets a real, useful LLM explanation regardless. This is the whole pipeline working end to end, not a mocked demo.
 
 ### M1.7 — Fixture-based test suite
 
