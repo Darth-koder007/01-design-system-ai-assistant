@@ -57,12 +57,12 @@ The flagship project. Static analysis (your existing strength from the Delivery 
 - [ ] **Not yet verified end-to-end:** doing so needs an actual PR against a pushed GitHub repo, which needs the same GitHub account access blocked since M0.5. The CLI itself (the part that matters most) _is_ verified live — see below.
 - **Acceptance (CLI):** ran the real built CLI (`node dist/cli.js check ...`) against both fixtures live against Ollama. `deprecated-prop.tsx`: correct explanation, correct codemod diff. `raw-elements.tsx` (5 violations): 2 get a clean codemod diff (`Input`, `Button` — both type-check), 3 correctly omit one (`Checkbox`, `Radio`, `Select` — all fail their type-check gate for the genuine reasons documented in M1.5), and every single violation still gets a real, useful LLM explanation regardless. This is the whole pipeline working end to end, not a mocked demo.
 
-### M1.7 — Fixture-based test suite
+### M1.7 — Fixture-based test suite — done (turned out to already be satisfied by M1.1-M1.6)
 
-- [ ] One fixture file per rule: input + expected `Violation[]`
-- [ ] Golden-file tests for codemod output (input + rule → expected diff)
-- [ ] LLM-dependent tests use substring/structural assertions, run against a recorded/replayed response in CI (no live calls to either provider in CI — flaky and unnecessary)
-- **Acceptance:** CI runs the full suite with zero live LLM calls and passes deterministically.
+- [x] One fixture file per rule: `analyze.test.ts` asserts the exact `Violation[]` per fixture, not just "some violations exist"
+- [x] Golden-file tests for codemod output: `codemod.test.ts` asserts exact diff content, including the two cases that correctly fail their type-check gate
+- [x] LLM-dependent tests (`explain.test.ts`, `check.test.ts`) use a hand-written deterministic fake `LlmClient` rather than a recorded real response — a deliberate choice, not a shortcut: a fake client is simpler than a record/replay mechanism and has zero flakiness risk from a real model's non-determinism, while still exercising the exact same code path (the fake conforms to the same `LlmClient` interface everything else uses)
+- **Acceptance:** verified directly, not assumed — grepped every test file for a real `.generate()` call or raw `fetch()` (none exist outside the actual client implementations), then physically stopped the Ollama container and re-ran the full suite: all 24 tests still pass. CI never needs Ollama or an Anthropic key to pass.
 
 ### M1.8 — Eval harness
 
