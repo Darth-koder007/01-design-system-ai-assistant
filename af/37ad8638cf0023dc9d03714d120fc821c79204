@@ -1,0 +1,73 @@
+evals/cases/clean-dashboard.tsx
+  s_f0c6a093b18fbc::t_cb0d94283b0ed3 1-11
+evals/cases/button-group.tsx
+  s_f0c6a093b18fbc::t_561aa99482da4e 1-18
+  s_f0c6a093b18fbc::t_48a470fe8dc8cd 19-24
+src/check.test.ts
+  s_f0c6a093b18fbc::t_59536862b862a5 20-37
+evals/cases/delete-button.tsx
+  s_f0c6a093b18fbc::t_a97efa567f491d 1-5
+  s_f0c6a093b18fbc::t_7ac5af0710b613 6-7
+evals/cases/page-background.tsx
+  s_f0c6a093b18fbc::t_3f9d2ce19e3587 1-3
+  s_f0c6a093b18fbc::t_edeae383535873 4-9
+evals/cases/card-actions.tsx
+  s_f0c6a093b18fbc::t_97352a8484ff1e 1-17
+evals/cases/login-form.tsx
+  s_f0c6a093b18fbc::t_7cd4c6dc90b05b 1-10
+evals/cases/alert-banner.tsx
+  s_f0c6a093b18fbc::t_b12d441f5c9f62 1-15
+  s_f0c6a093b18fbc::t_66dc8bed3e62d2 16-21
+evals/cases/icon-button.tsx
+  s_f0c6a093b18fbc::t_6c975f6fd24a68 1-12
+evals/cases/badge-custom.tsx
+  s_f0c6a093b18fbc::t_ddc23942fed1d4 1-5
+evals/cases/text-highlight.tsx
+  s_f0c6a093b18fbc::t_0b2c1d6279191b 1-3
+evals/cases/card-header.tsx
+  s_f0c6a093b18fbc::t_ab570fbee83798 1-7
+evals/cases/toolbar.tsx
+  s_f0c6a093b18fbc::t_c0ed4b3669e920 1-18
+evals/cases/confirm-dialog.tsx
+  s_f0c6a093b18fbc::t_5fb37d49da8599 1-20
+evals/cases/logo.tsx
+  s_f0c6a093b18fbc::t_1f82a9a7b54c9b 1-8
+evals/cases/settings-panel.tsx
+  s_f0c6a093b18fbc::t_77e28f06f6577f 1-15
+evals/cases/checkbox-list.tsx
+  s_f0c6a093b18fbc::t_f164dae6e03a3c 1-18
+src/check.ts
+  s_f0c6a093b18fbc::t_5a9857f2d1a786 13-18,20-21
+evals/cases/modal-footer.tsx
+  s_f0c6a093b18fbc::t_4dff7adcda3f12 1-12
+  s_f0c6a093b18fbc::t_fac02fc2dd37ce 13-18
+evals/cases/status-icon.tsx
+  s_f0c6a093b18fbc::t_bfd2bcb1f798f9 1-7
+PLAN.md
+  s_f0c6a093b18fbc::t_7bd2b13063fa2f 67-69
+  s_f0c6a093b18fbc::t_44caf47b9f2b7e 70
+evals/cases/nav-icon.tsx
+  s_f0c6a093b18fbc::t_3b26b2595f02e5 1-7
+evals/cases/filter-bar.tsx
+  s_f0c6a093b18fbc::t_017e2cdacb142a 1-12
+evals/cases/signup-form.tsx
+  s_f0c6a093b18fbc::t_35d20910224b16 1-26
+evals/cases/banner.tsx
+  s_f0c6a093b18fbc::t_c0549798cbf504 1-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "af37ad8638cf0023dc9d03714d120fc821c79204",
+  "prompts": {},
+  "sessions": {
+    "s_f0c6a093b18fbc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cdf59d10-8ac1-40c5-8e78-59b7400789f3",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Darth-koder007 <vj2010sn@gmail.com>"
+    }
+  }
+}
