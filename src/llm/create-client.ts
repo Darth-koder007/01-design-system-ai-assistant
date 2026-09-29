@@ -3,7 +3,9 @@ import { createOllamaClient } from "./ollama-client.js";
 import type { LlmClient, LlmProvider } from "./types.js";
 
 const DEFAULT_MODEL: Record<LlmProvider, string> = {
-  ollama: "llama3.2:1b",
+  // 1b hallucinated a nonexistent prop in manual testing (see PLAN.md M1.4) — 3b did not,
+  // still small enough (~2GB) to be a reasonable default local pull.
+  ollama: "llama3.2:3b",
   anthropic: "claude-haiku-4-5-20251001",
 };
 
